@@ -6,7 +6,7 @@
 #    By: welee <welee@student.42singapore.sg>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/03 14:42:01 by welee             #+#    #+#              #
-#    Updated: 2024/05/03 15:36:59 by welee            ###   ########.fr        #
+#    Updated: 2024/05/03 15:58:49 by welee            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ BIN_DIR = bin
 DOCS_DIR = docs
 
 INCLUDES = -I ${INCLUDES_DIR}
-CC = gcc
+CC = cc
 CFLAGS = -Wall -Wextra -Werror
 DEFINE = -D BUFFER_SIZE=32
 LIBC = ar rcs

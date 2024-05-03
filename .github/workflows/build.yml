@@ -1,0 +1,34 @@
+name: build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  norminette:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout repo
+      uses: actions/checkout@main
+    - name: norminette
+      uses: alexandregv/norminette-action@v3
+      with:
+        flags: '-R CheckForbiddenSourceHeader -R CheckDefine srcs includes'
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout repo
+      uses: actions/checkout@main
+    - name: build application
+      run: make all
+    # - name: run tests
+    #   run: make tests
+  dist:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout repo
+      uses: actions/checkout@main
+    - name: distribution
+      run: make dist
