@@ -1,0 +1,6 @@
+{
+	"circleci.persistedProjectSelection": [],
+	"files.associations": {
+		"stddef.h": "c"
+	}
+}
