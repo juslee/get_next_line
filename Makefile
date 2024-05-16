@@ -6,11 +6,11 @@
 #    By: welee <welee@student.42singapore.sg>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/03 14:42:01 by welee             #+#    #+#              #
-#    Updated: 2024/05/03 15:58:49 by welee            ###   ########.fr        #
+#    Updated: 2024/05/15 16:33:02 by welee            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = get_next_line.a
+NAME = libgnl.a
 PUBLIC_DIR = public
 SRCS_DIR = srcs
 OBJS_DIR = objs
