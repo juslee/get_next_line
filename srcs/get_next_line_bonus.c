@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: welee <welee@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 14:37:16 by welee             #+#    #+#             */
-/*   Updated: 2024/06/07 11:09:08 by welee            ###   ########.fr       */
+/*   Updated: 2024/06/07 11:08:58 by welee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
  * @brief Read a line from a file descriptor
  */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static char	*read_to_newline(int fd, char *stored)
 {
@@ -77,15 +77,15 @@ static char	*save_remaining(char *stored)
 
 char	*get_next_line(int fd)
 {
-	static char	*stored;
+	static char	*stored[FD_SETSIZE];
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd >= FD_SETSIZE)
 		return (NULL);
-	stored = read_to_newline(fd, stored);
-	if (!stored)
+	stored[fd] = read_to_newline(fd, stored[fd]);
+	if (!stored[fd])
 		return (NULL);
-	line = extract_line(stored);
-	stored = save_remaining(stored);
+	line = extract_line(stored[fd]);
+	stored[fd] = save_remaining(stored[fd]);
 	return (line);
 }
