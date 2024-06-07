@@ -6,7 +6,7 @@
 /*   By: welee <welee@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 14:37:16 by welee             #+#    #+#             */
-/*   Updated: 2024/05/16 19:48:22 by welee            ###   ########.fr       */
+/*   Updated: 2024/06/07 10:09:28 by welee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,107 +16,67 @@
  */
 
 #include "get_next_line.h"
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
 
-static char	*extract_concatenated_line(t_list **remainder)
+static void	ft_free_ptr(char **ptr)
 {
-	t_list	*temp;
-	size_t	len;
-	char	*line;
+	if (ptr && *ptr)
+	{
+		free(*ptr);
+		*ptr = NULL;
+	}
+}
 
-	temp = *remainder;
-	len = 0;
-	while (temp)
-	{
-		len += strlen(temp->content);
-		temp = temp->next;
-	}
-	line = (char *)malloc(sizeof(char) * (len + 1));
-	if (!line)
-		return (NULL);
-	line[0] = '\0';
-	temp = *remainder;
-	while (temp)
-	{
-		strcat(line, temp->content);
-		temp = temp->next;
-	}
+static char	*update_remainder(char **remainder, char *newline)
+{
+	char	*line;
+	char	*temp;
+
+	*newline = '\0';
+	line = ft_strdup(*remainder);
+	temp = ft_strdup(newline + 1);
+	ft_free_ptr(remainder);
+	*remainder = temp;
 	return (line);
 }
 
-static char	*find_and_split_newline(char *line,
-	t_list **remainder, char **buffer)
+static char	*read_line(int fd, char **remainder)
 {
-	char	*newline_pos;
-	t_list	*temp;
+	char	buffer[BUFFER_SIZE + 1];
+	char	*newline;
+	char	*temp;
+	ssize_t	bytes_read;
 
-	newline_pos = ft_strchr(line, '\n');
-	if (newline_pos)
+	newline = ft_strchr(*remainder, '\n');
+	while (!(newline))
 	{
-		*newline_pos = '\0';
-		*buffer = ft_strdup(newline_pos + 1);
-	}
-	while (*remainder)
-	{
-		temp = (*remainder)->next;
-		free((*remainder)->content);
-		free(*remainder);
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (bytes_read <= 0)
+			break ;
+		buffer[bytes_read] = '\0';
+		temp = ft_strjoin(*remainder, buffer);
+		ft_free_ptr(remainder);
 		*remainder = temp;
 	}
-	if (*buffer)
-		ft_lstadd_back(remainder, ft_lstnew(*buffer));
-	return (line);
-}
-
-static char	*extract_line(t_list **remainder, char **buffer)
-{
-	char	*line;
-
-	if (!(*remainder) && !(*buffer))
+	if (!*remainder)
 		return (NULL);
-	if (*buffer)
-	{
-		ft_lstadd_back(remainder, ft_lstnew(*buffer));
-		*buffer = NULL;
-	}
-	line = extract_concatenated_line(remainder);
-	if (!line)
-		return (NULL);
-	line = find_and_split_newline(line, remainder, buffer);
-	return (line);
-}
-
-static int	read_and_store(int fd, t_list **remainder, char **buffer)
-{
-	int	bytes_read;
-
-	*buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!*buffer)
-		return (-1);
-	bytes_read = read(fd, *buffer, BUFFER_SIZE);
-	while (bytes_read > 0)
-	{
-		(*buffer)[bytes_read] = '\0';
-		if (ft_strchr(*buffer, '\n'))
-			return (bytes_read);
-		ft_lstadd_back(remainder, ft_lstnew(ft_strdup(*buffer)));
-		bytes_read = read(fd, *buffer, BUFFER_SIZE);
-	}
-	return (free(*buffer), *buffer = NULL, bytes_read);
+	if (newline)
+		return (update_remainder(remainder, newline));
+	else
+		return (ft_strdup(*remainder));
 }
 
 char	*get_next_line(int fd)
 {
-	static t_list	*remainder;
-	char			*buffer;
-	int				bytes_read;
+	static char	*remainder;
+	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	bytes_read = read_and_store(fd, &remainder, &buffer);
-	if (bytes_read < 0)
+	line = read_line(fd, &remainder);
+	if (!line || !*line)
+	{
+		ft_free_ptr(&line);
 		return (NULL);
-	return (extract_line(&remainder, &buffer));
+	}
+	return (line);
 }
