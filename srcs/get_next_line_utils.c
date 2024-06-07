@@ -6,7 +6,7 @@
 /*   By: welee <welee@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 14:37:29 by welee             #+#    #+#             */
-/*   Updated: 2024/06/07 14:29:13 by welee            ###   ########.fr       */
+/*   Updated: 2024/06/07 17:13:47 by welee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,15 +68,11 @@ char	*ft_strchr(const char *s, int c)
  */
 char	*ft_strjoin(char const *s1, char const *s2)
 {
-	size_t	len1;
-	size_t	len2;
 	char	*joined;
 	size_t	i;
 	size_t	j;
 
-	len1 = ft_strlen(s1);
-	len2 = ft_strlen(s2);
-	joined = malloc(len1 + len2 + 1);
+	joined = (char *)malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
 	if (!joined)
 		return (NULL);
 	i = 0;
