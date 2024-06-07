@@ -6,7 +6,7 @@
 /*   By: welee <welee@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 14:37:29 by welee             #+#    #+#             */
-/*   Updated: 2024/06/07 11:30:32 by welee            ###   ########.fr       */
+/*   Updated: 2024/06/07 14:29:13 by welee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,12 @@
 #include <stddef.h>
 #include "get_next_line.h"
 
+/**
+ * @brief Returns the length of a string.
+ *
+ * @param s The string to measure.
+ * @return The length of the string.
+ */
 size_t	ft_strlen(const char *s)
 {
 	size_t	i;
@@ -29,6 +35,15 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
+/**
+ * @brief Returns a pointer to the first occurrence of the character c
+ * in the string s.
+ *
+ * @param s The string to search.
+ * @param c The character to find.
+ * @return A pointer to the matched character or NULL if the character is not
+ * found.
+ */
 char	*ft_strchr(const char *s, int c)
 {
 	if (!s)
@@ -44,6 +59,13 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
+/**
+ * @brief Concatenates two strings.
+ *
+ * @param s1 The first string.
+ * @param s2 The second string.
+ * @return A newly allocated string containing the concatenation of s1 and s2.
+ */
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	size_t	len1;
@@ -70,15 +92,24 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (joined);
 }
 
+/**
+ * @brief Returns a substring of the string s.
+ *
+ * @param s The string to extract from.
+ * @param start The starting index of the substring.
+ * @param len The length of the substring.
+ * @return A newly allocated substring of s.
+ */
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	size_t	i;
 	char	*sub;
 
-	if (!s || ft_strlen(s) < start)
+	if (!s || ft_strlen(s) < start || len <= 0
+		|| !s[start] || start + len > ft_strlen(s) + 1)
 		return (NULL);
 	i = 0;
-	sub = malloc(len + 1);
+	sub = (char *)malloc(len + 1);
 	if (!sub)
 		return (NULL);
 	while (s[start + i] && i < len)

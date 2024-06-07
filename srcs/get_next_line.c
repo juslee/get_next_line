@@ -6,7 +6,7 @@
 /*   By: welee <welee@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 14:37:16 by welee             #+#    #+#             */
-/*   Updated: 2024/06/07 11:30:39 by welee            ###   ########.fr       */
+/*   Updated: 2024/06/07 15:04:11 by welee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,14 @@
 #include <stddef.h>
 #include "get_next_line.h"
 
+/**
+ * @brief Read from a file descriptor until a newline is encountered.
+ *
+ * @param fd File descriptor to read from.
+ * @param stored Previously read but not yet processed text.
+ * @return char* Newly allocated string containing the read text,
+ * NULL on error.
+ */
 static char	*read_to_newline(int fd, char *stored)
 {
 	char	buffer[BUFFER_SIZE + 1];
@@ -37,12 +45,24 @@ static char	*read_to_newline(int fd, char *stored)
 		}
 		buffer[bytes_read] = '\0';
 		temp = stored;
-		stored = ft_strjoin(stored, buffer);
+		stored = ft_strjoin(temp, buffer);
+		if (!stored)
+		{
+			free(temp);
+			return (NULL);
+		}
 		free(temp);
 	}
 	return (stored);
 }
 
+/**
+ * @brief Extract a line from the stored text.
+ *
+ * @param stored Previously read but not yet processed text.
+ * @return char* Newly allocated string containing the extracted line,
+ * NULL if no line is found.
+ */
 static char	*extract_line(char *stored)
 {
 	size_t	i;
@@ -60,28 +80,41 @@ static char	*extract_line(char *stored)
 	return (line);
 }
 
+/**
+ * @brief Save the remaining text after the extracted line.
+ *
+ * @param stored Previously read but not yet processed text.
+ * @return char* Newly allocated string containing the remaining
+ * text, NULL if no remaining text is found.
+ */
 static char	*save_remaining(char *stored)
 {
 	size_t	i;
 	char	*remaining;
 
+	if (!stored || stored[0] == '\0')
+		return (NULL);
 	i = 0;
 	while (stored[i] && stored[i] != '\n')
 		i++;
 	if (!stored[i])
-	{
-		free(stored);
 		return (NULL);
-	}
 	remaining = ft_substr(stored, i + 1, ft_strlen(stored) - i - 1);
-	free(stored);
 	return (remaining);
 }
 
+/**
+ * @brief Get the next line from a file descriptor.
+ *
+ * @param fd File descriptor to read from.
+ * @return char* Newly allocated string containing the next line,
+ * NULL if an error occurs or no more lines are found.
+ */
 char	*get_next_line(int fd)
 {
 	static char	*stored;
 	char		*line;
+	char		*temp;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
@@ -89,6 +122,14 @@ char	*get_next_line(int fd)
 	if (!stored)
 		return (NULL);
 	line = extract_line(stored);
-	stored = save_remaining(stored);
+	if (!line)
+	{
+		free(stored);
+		stored = NULL;
+		return (NULL);
+	}
+	temp = stored;
+	stored = save_remaining(temp);
+	free(temp);
 	return (line);
 }
