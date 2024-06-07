@@ -6,7 +6,7 @@
 /*   By: welee <welee@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 14:37:16 by welee             #+#    #+#             */
-/*   Updated: 2024/06/07 11:09:08 by welee            ###   ########.fr       */
+/*   Updated: 2024/06/07 11:30:39 by welee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
  * @brief Read a line from a file descriptor
  */
 
+#include <stdlib.h>
+#include <unistd.h>
+#include <stddef.h>
 #include "get_next_line.h"
 
 static char	*read_to_newline(int fd, char *stored)

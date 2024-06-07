@@ -6,7 +6,7 @@
 /*   By: welee <welee@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 14:52:37 by welee             #+#    #+#             */
-/*   Updated: 2024/06/07 11:10:07 by welee            ###   ########.fr       */
+/*   Updated: 2024/06/07 11:27:27 by welee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,7 @@
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
 # endif
-
 # include <stdlib.h>
-# include <unistd.h>
-# include <stddef.h>
-# include <sys/select.h>
 
 char	*get_next_line(int fd);
 size_t	ft_strlen(const char *s);

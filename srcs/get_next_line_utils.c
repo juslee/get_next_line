@@ -6,7 +6,7 @@
 /*   By: welee <welee@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 14:37:29 by welee             #+#    #+#             */
-/*   Updated: 2024/06/07 10:50:55 by welee            ###   ########.fr       */
+/*   Updated: 2024/06/07 11:30:32 by welee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
  * @brief Utility functions for get_next_line
  */
 
+#include <stdlib.h>
+#include <stddef.h>
 #include "get_next_line.h"
 
 size_t	ft_strlen(const char *s)
