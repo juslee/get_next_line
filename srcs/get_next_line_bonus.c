@@ -6,7 +6,7 @@
 /*   By: welee <welee@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 14:37:16 by welee             #+#    #+#             */
-/*   Updated: 2024/06/07 16:20:51 by welee            ###   ########.fr       */
+/*   Updated: 2024/06/10 18:23:38 by welee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,29 +31,27 @@
  */
 static char	*read_to_newline(int fd, char *stored)
 {
-	char	buffer[BUFFER_SIZE + 1];
+	char	*buffer;
 	int		bytes_read;
 	char	*temp;
 
+	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buffer)
+		return (NULL);
 	bytes_read = 1;
 	while (!ft_strchr(stored, '\n') && bytes_read > 0)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read == -1)
-		{
-			free(stored);
-			return (NULL);
-		}
+		if (bytes_read < 0)
+			return (free(stored), NULL);
 		buffer[bytes_read] = '\0';
 		temp = stored;
 		stored = ft_strjoin(temp, buffer);
-		if (!stored)
-		{
-			free(temp);
-			return (NULL);
-		}
 		free(temp);
+		if (!stored)
+			return (free(buffer), NULL);
 	}
+	free(buffer);
 	return (stored);
 }
 
