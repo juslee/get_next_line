@@ -6,7 +6,7 @@
 #    By: welee <welee@student.42singapore.sg>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/15 15:15:06 by welee             #+#    #+#              #
-#    Updated: 2024/06/10 17:28:18 by welee            ###   ########.fr        #
+#    Updated: 2024/06/10 17:35:44 by welee            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,10 +34,10 @@ bonus: $(BONUS_OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
-	$(RM) $(OBJS)
+	$(RM) $(OBJS) $(BONUS_OBJS)
 
 fclean: clean
-	$(RM) $(NAME)
+	$(RM) mandatory/$(NAME) bonus/$(NAME)
 
 re: fclean all
 

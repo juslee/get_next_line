@@ -6,7 +6,7 @@
 /*   By: welee <welee@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 14:37:16 by welee             #+#    #+#             */
-/*   Updated: 2024/06/07 16:13:30 by welee            ###   ########.fr       */
+/*   Updated: 2024/06/10 17:40:23 by welee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,9 @@ static char	*read_to_newline(int fd, char *stored)
 		buffer[bytes_read] = '\0';
 		temp = stored;
 		stored = ft_strjoin(temp, buffer);
-		if (!stored)
-		{
-			free(temp);
-			return (NULL);
-		}
 		free(temp);
+		if (!stored)
+			return (NULL);
 	}
 	return (stored);
 }
