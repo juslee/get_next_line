@@ -6,11 +6,12 @@
 #    By: welee <welee@student.42singapore.sg>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/03 14:42:01 by welee             #+#    #+#              #
-#    Updated: 2024/05/15 16:33:02 by welee            ###   ########.fr        #
+#    Updated: 2024/06/10 17:23:48 by welee            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = libgnl.a
+BONUS_NAME = libgnl_bonus.a
 PUBLIC_DIR = public
 SRCS_DIR = srcs
 OBJS_DIR = objs
@@ -29,8 +30,12 @@ RM = rm -f
 MKDIR = mkdir -p
 MAKE = make -C
 
-SRCS = $(shell find $(SRCS_DIR) -name '*.c')
+SRCS =	$(SRCS_DIR)/get_next_line.c \
+		$(SRCS_DIR)/get_next_line_utils.c
+BONUS_SRCS = $(SRCS_DIR)/get_next_line_bonus.c \
+			 $(SRCS_DIR)/get_next_line_utils_bonus.c
 OBJS = $(SRCS:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
+BONUS_OBJS = $(BONUS_SRCS:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
 
 NORM = norminette
 NORM_FLAGS = -R CheckForbiddenSourceHeader -R CheckDefine
@@ -44,12 +49,16 @@ $(NAME): $(OBJS)
 	$(MKDIR) $(BIN_DIR)
 	$(LIBC) $(BIN_DIR)/$(NAME) $(OBJS)
 
+bonus: $(BONUS_OBJS)
+	$(MKDIR) $(BIN_DIR)
+	$(LIBC) $(BIN_DIR)/$(BONUS_NAME) $(BONUS_OBJS)
+
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
 	$(MKDIR) $(@D)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
-	$(RM) $(OBJS)
+	$(RM) $(OBJS) $(BONUS_OBJS)
 	$(RM) -r $(DIST_DIR)
 	$(MAKE) $(TEST_DIR) clean
 
@@ -70,6 +79,9 @@ dist:
 
 tests: all
 	$(MAKE) $(TEST_DIR) all
+
+tests_bonus: all
+	$(MAKE) $(TEST_DIR) bonus
 
 docs:
 	${DOXYGEN} ${DOXYGEN_CONFIG}
