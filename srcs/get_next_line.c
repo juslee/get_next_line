@@ -6,7 +6,7 @@
 /*   By: welee <welee@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 14:37:16 by welee             #+#    #+#             */
-/*   Updated: 2024/06/10 18:30:35 by welee            ###   ########.fr       */
+/*   Updated: 2024/06/11 10:44:44 by welee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,7 @@ static char	*read_to_newline(int fd, char *stored)
 		if (!stored)
 			return (free(buffer), NULL);
 	}
-	free(buffer);
-	return (stored);
+	return (free(buffer), stored);
 }
 
 /**
@@ -121,13 +120,8 @@ char	*get_next_line(int fd)
 		return (NULL);
 	line = extract_line(stored);
 	if (!line)
-	{
-		free(stored);
-		stored = NULL;
-		return (NULL);
-	}
+		return (free(stored), stored = NULL, NULL);
 	temp = stored;
 	stored = save_remaining(temp);
-	free(temp);
-	return (line);
+	return (free(temp), line);
 }
