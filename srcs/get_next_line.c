@@ -6,7 +6,7 @@
 /*   By: welee <welee@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 14:37:16 by welee             #+#    #+#             */
-/*   Updated: 2024/09/19 16:21:18 by welee            ###   ########.fr       */
+/*   Updated: 2024/09/20 00:34:53 by welee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <unistd.h>
 #include <stddef.h>
 #include "get_next_line.h"
+#include <stdio.h>
 
 /**
  * @brief Read from a file descriptor until a newline is encountered.
@@ -28,11 +29,11 @@
  * @return char* Newly allocated string containing the read text,
  * NULL on error.
  */
-static char	*read_to_newline(int fd, char *stored)
+static char	*read_to_newline(int fd, char stored[10240])
 {
 	char	*buffer;
 	int		bytes_read;
-	char	*temp;
+	size_t	stored_len;
 
 	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
@@ -42,13 +43,12 @@ static char	*read_to_newline(int fd, char *stored)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read < 0)
-			return (free(stored), free(buffer), NULL);
-		buffer[bytes_read] = '\0';
-		temp = stored;
-		stored = ft_strjoin(temp, buffer);
-		free(temp);
-		if (!stored)
 			return (free(buffer), NULL);
+		buffer[bytes_read] = '\0';
+		stored_len = ft_strlen(stored);
+		if (stored_len + bytes_read >= 10240)
+			return (free(buffer), NULL);
+		ft_strcat(stored, buffer);
 	}
 	return (free(buffer), stored);
 }
@@ -60,7 +60,7 @@ static char	*read_to_newline(int fd, char *stored)
  * @return char* Newly allocated string containing the extracted line,
  * NULL if no line is found.
  */
-static char	*extract_line(char *stored)
+static char	*extract_line(char stored[10240])
 {
 	size_t	i;
 	char	*line;
@@ -84,20 +84,31 @@ static char	*extract_line(char *stored)
  * @return char* Newly allocated string containing the remaining
  * text, NULL if no remaining text is found.
  */
-static char	*save_remaining(char *stored)
+static void	save_remaining(char stored[10240])
 {
 	size_t	i;
-	char	*remaining;
+	size_t	j;
 
 	if (!stored || stored[0] == '\0')
-		return (NULL);
+		return ;
 	i = 0;
 	while (stored[i] && stored[i] != '\n')
 		i++;
 	if (!stored[i])
-		return (NULL);
-	remaining = ft_substr(stored, i + 1, ft_strlen(stored) - i - 1);
-	return (remaining);
+	{
+		stored[0] = '\0';
+		return ;
+	}
+	i++;
+	j = 0;
+	while (stored[i])
+	{
+		stored[j] = stored[i];
+		i++;
+		j++;
+	}
+	stored[j] = '\0';
+	return ;
 }
 
 /**
@@ -109,24 +120,16 @@ static char	*save_remaining(char *stored)
  */
 char	*get_next_line(int fd)
 {
-	static char	*stored;
+	static char	stored[10240];
 	char		*line;
-	char		*temp;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	stored = read_to_newline(fd, stored);
-	if (!stored)
+	if (!read_to_newline(fd, stored))
 		return (NULL);
 	line = extract_line(stored);
-	if (!line)
-		return (free(stored), stored = NULL, NULL);
-	temp = stored;
-	stored = save_remaining(temp);
-	if (!stored || stored[0] == '\0')
-	{
-		free(stored);
-		stored = NULL;
-	}
-	return (free(temp), line);
+	if (line == NULL)
+		return (NULL);
+	save_remaining(stored);
+	return (line);
 }
